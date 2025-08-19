@@ -332,10 +332,16 @@
     <!-- AdminLTE JS -->
     <script src="static/js/adminlte.min.js"></script>
     
+    <!-- EcoTrack Data Model -->
+    <script src="static/js/ecotrack-data.js"></script>
+
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
 
     <script>
+      // Get data from shared model
+      const dataModel = window.EcoTrackData;
+
       // Authentication check
       window.addEventListener('load', function() {
         const user = sessionStorage.getItem('ecotrack_user');
@@ -343,9 +349,9 @@
           window.location.href = 'login.html';
           return;
         }
-        
-        const userObj = JSON.parse(user);
-        document.getElementById('userName').textContent = userObj.name || 'Demo User';
+
+        const userData = dataModel.getUser();
+        document.getElementById('userName').textContent = userData.name;
       });
 
       function logout() {
