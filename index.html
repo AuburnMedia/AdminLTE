@@ -346,28 +346,84 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
 
     <script>
+      // Authentication and user data
+      let userData = {
+        currentCarbon: 2.3,
+        targetCarbon: 3.0,
+        monthlyData: [0.25, 0.22, 0.23, 0.21, 0.18, 0.19, 0.20, 0.22, 0.23, 0.21, 0.18], // tonnes CO2 per month
+        targetData: [0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25]
+      };
+
+      // Check authentication on page load
+      window.addEventListener('load', function() {
+        const user = sessionStorage.getItem('ecotrack_user');
+        if (!user) {
+          window.location.href = 'login.html';
+          return;
+        }
+
+        const userObj = JSON.parse(user);
+        document.getElementById('userName').textContent = userObj.name;
+
+        // Update dashboard with user data
+        updateDashboard();
+      });
+
+      function logout() {
+        sessionStorage.removeItem('ecotrack_user');
+        window.location.href = 'login.html';
+      }
+
+      function updateDashboard() {
+        // Update progress calculation
+        const progress = Math.round((userData.currentCarbon / userData.targetCarbon) * 100);
+        const remaining = (userData.targetCarbon - userData.currentCarbon).toFixed(1);
+
+        // Update progress circle
+        document.getElementById('progressCircle').style.setProperty('--progress', progress + '%');
+        document.getElementById('progressText').textContent = progress + '%';
+        document.getElementById('currentProgress').textContent = `${userData.currentCarbon} / ${userData.targetCarbon} tonnes`;
+
+        // Update goal message
+        if (progress < 100) {
+          document.getElementById('goalMessage').textContent = `You're ${remaining} tonnes away from your annual goal!`;
+        } else {
+          document.getElementById('goalMessage').textContent = `You've exceeded your goal by ${(userData.currentCarbon - userData.targetCarbon).toFixed(1)} tonnes!`;
+        }
+      }
+
+      function updateGoal() {
+        const newGoal = prompt('Enter your new annual CO₂ goal (in tonnes):', userData.targetCarbon);
+        if (newGoal && !isNaN(newGoal) && newGoal > 0) {
+          userData.targetCarbon = parseFloat(newGoal);
+          updateDashboard();
+          alert('Goal updated successfully!');
+        }
+      }
+
       // Carbon Usage Area Chart
       const carbonUsageCtx = document.getElementById('carbon-usage-chart').getContext('2d');
       const carbonUsageChart = new Chart(carbonUsageCtx, {
         type: 'line',
         data: {
-          labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
           datasets: [{
-            label: 'Carbon Usage',
-            data: [30, 45, 35, 50, 49, 60, 70],
+            label: 'Actual CO₂ (tonnes)',
+            data: userData.monthlyData,
             backgroundColor: 'rgba(54, 162, 235, 0.2)',
             borderColor: 'rgba(54, 162, 235, 1)',
             borderWidth: 2,
             fill: true,
             tension: 0.4
           }, {
-            label: 'Target Usage',
-            data: [20, 35, 25, 40, 39, 50, 55],
-            backgroundColor: 'rgba(153, 102, 255, 0.2)',
-            borderColor: 'rgba(153, 102, 255, 1)',
+            label: 'Target CO₂ (tonnes)',
+            data: userData.targetData,
+            backgroundColor: 'rgba(40, 167, 69, 0.2)',
+            borderColor: 'rgba(40, 167, 69, 1)',
             borderWidth: 2,
-            fill: true,
-            tension: 0.4
+            fill: false,
+            tension: 0.4,
+            borderDash: [5, 5]
           }]
         },
         options: {
@@ -375,17 +431,33 @@
           maintainAspectRatio: false,
           plugins: {
             legend: {
-              display: false
+              display: true,
+              position: 'top'
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return context.dataset.label + ': ' + context.parsed.y + ' tonnes CO₂';
+                }
+              }
             }
           },
           scales: {
             y: {
               beginAtZero: true,
+              title: {
+                display: true,
+                text: 'CO₂ Emissions (tonnes)'
+              },
               grid: {
                 display: true
               }
             },
             x: {
+              title: {
+                display: true,
+                text: 'Month (2024)'
+              },
               grid: {
                 display: false
               }
@@ -399,18 +471,18 @@
       const monthlyUsageChart = new Chart(monthlyUsageCtx, {
         type: 'bar',
         data: {
-          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+          labels: ['Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
           datasets: [{
-            label: 'Usage',
-            data: [12, 19, 15, 17, 20, 18, 22],
+            label: 'Monthly CO₂',
+            data: [0.25, 0.22, 0.23, 0.21, 0.18],
             backgroundColor: 'rgba(54, 162, 235, 0.8)',
             borderColor: 'rgba(54, 162, 235, 1)',
             borderWidth: 1
           }, {
-            label: 'Average Usage',
-            data: [10, 15, 12, 14, 16, 14, 18],
-            backgroundColor: 'rgba(201, 203, 207, 0.8)',
-            borderColor: 'rgba(201, 203, 207, 1)',
+            label: 'Target',
+            data: [0.25, 0.25, 0.25, 0.25, 0.25],
+            backgroundColor: 'rgba(40, 167, 69, 0.6)',
+            borderColor: 'rgba(40, 167, 69, 1)',
             borderWidth: 1
           }]
         },
@@ -425,11 +497,22 @@
                 usePointStyle: true,
                 boxWidth: 6
               }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return context.dataset.label + ': ' + context.parsed.y + ' tonnes CO₂';
+                }
+              }
             }
           },
           scales: {
             y: {
               beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Tonnes CO₂'
+              },
               grid: {
                 display: false
               }
