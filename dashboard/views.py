@@ -102,3 +102,27 @@ def footprint_calculator_view(request):
         'page_title': 'EcoTrack | Footprint Calculator',
     }
     return render(request, 'dashboard/calculator.html', context)
+
+
+def detailed_view(request):
+    """Detailed information view"""
+    context = {
+        'page_title': 'EcoTrack | Detailed Information',
+    }
+    return render(request, 'dashboard/detailed.html', context)
+
+
+def impact_view(request):
+    """Impact view"""
+    context = {
+        'page_title': 'EcoTrack | Your Impact',
+    }
+    return render(request, 'dashboard/impact.html', context)
+
+
+def checkup_view(request):
+    """Checkup/footprint estimator view"""
+    context = {
+        'page_title': 'EcoTrack | Footprint Estimator',
+    }
+    return render(request, 'dashboard/checkup.html', context)
