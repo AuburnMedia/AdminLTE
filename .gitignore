@@ -1,49 +1,41 @@
-# Django
+# generated types
+.astro/
+
+# unwanted types
+**/env.d.ts
+
+# System / Log files
+*.DS_Store
 *.log
-*.pot
-*.pyc
-__pycache__/
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
-media/
-staticfiles/
 
-# Environment variables
-.env
+# Archives
+*.zip
 
-# Virtual environment
-venv/
-env/
-.venv/
+# Sass Cache
+.sass-cache
 
-# IDE
+# Project files
+.idea
+nbproject
+nbproject/private
 .vscode/
-.idea/
-*.swp
-*.swo
+.vs/
 
-# OS
-.DS_Store
-Thumbs.db
+# Node / Bower
+node_modules/
+bower_components/
 
-# Python
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
+# Docs
+/docs/_site/
+/docs/vendor/
+/docs/.bundle/
+/docs_html/
+.jekyll-cache/
+.jekyll-metadata
+
+# ETC
+TODO
+test.html
+ad.js
+/.cache/
+CLAUDE.md
