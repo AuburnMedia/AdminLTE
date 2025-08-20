@@ -1,0 +1,404 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+  .impact-header {
+    padding: 2rem 0;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-bottom: 1px solid #dee2e6;
+  }
+
+  .impact-percentage-display {
+    text-align: center;
+    padding: 3rem 0;
+  }
+
+  .impact-percentage-text {
+    font-size: 5rem;
+    font-weight: bold;
+    color: #28a745;
+    margin-bottom: 1rem;
+  }
+
+  .impact-progress-bar {
+    width: 100%;
+    height: 80px;
+    background-color: #e9ecef;
+    border-radius: 40px;
+    position: relative;
+    margin: 2rem 0;
+    overflow: hidden;
+  }
+
+  .impact-progress-fill {
+    height: 100%;
+    background: linear-gradient(45deg, #28a745, #20c997);
+    border-radius: 40px;
+    transition: width 0.8s ease-in-out;
+    position: relative;
+  }
+
+  .impact-time-to-goal {
+    text-align: center;
+    font-size: 1.1rem;
+    color: #6c757d;
+    margin-top: 1rem;
+  }
+
+  .change-goal-btn {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 25px;
+    color: white;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+
+  .change-goal-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(0, 123, 255, 0.3);
+  }
+
+  .impact-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease;
+  }
+
+  .impact-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .share-section {
+    background: linear-gradient(135deg, #f8f9fa, #ffffff);
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+    margin-top: 2rem;
+    border: 1px solid #e9ecef;
+  }
+
+  .cloud-icon {
+    font-size: 4rem;
+    color: #6c757d;
+    margin-bottom: 1rem;
+  }
+
+  .share-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #495057;
+  }
+
+  .share-description {
+    color: #6c757d;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+  }
+
+  .share-btn {
+    background: #28a745;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 25px;
+    color: white;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .share-btn:hover {
+    background: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(40, 167, 69, 0.3);
+  }
+
+  .impact-stats {
+    background: linear-gradient(135deg, #e8f5e8, #f8fff8);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+  }
+
+  .stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(40, 167, 69, 0.1);
+  }
+
+  .stat-item:last-child {
+    border-bottom: none;
+  }
+
+  .stat-label {
+    color: #495057;
+    font-weight: 500;
+  }
+
+  .stat-value {
+    color: #28a745;
+    font-weight: bold;
+    font-size: 1.1rem;
+  }
+
+  @media (max-width: 768px) {
+    .impact-percentage-text {
+      font-size: 3.5rem;
+    }
+    
+    .impact-progress-bar {
+      height: 60px;
+      margin: 1.5rem 0;
+    }
+    
+    .change-goal-btn,
+    .share-btn {
+      padding: 0.6rem 1.5rem;
+      font-size: 0.9rem;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!--begin::App Content Header-->
+<div class="app-content-header">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-6">
+        <h3 class="mb-0">Your Impact</h3>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-end">
+          <li class="breadcrumb-item"><a href="{% url 'dashboard:index' %}">Home</a></li>
+          <li class="breadcrumb-item active" aria-current="page">
+            Your Impact
+          </li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+<!--end::App Content Header-->
+
+<!--begin::App Content-->
+<div class="app-content">
+  <div class="container-fluid">
+    <!--begin::Main Impact Card-->
+    <div class="row justify-content-center mb-4">
+      <div class="col-lg-8">
+        <div class="card impact-card">
+          <div class="card-header impact-header">
+            <h4 class="text-center mb-0">Report</h4>
+          </div>
+          <div class="card-body">
+            <!--begin::Progress Display-->
+            <div class="impact-percentage-display">
+              <div class="impact-percentage-text" id="progressPercentage">77%</div>
+              <div class="impact-progress-bar">
+                <div class="impact-progress-fill" id="progressBar" style="width: 77%"></div>
+              </div>
+              <div class="impact-time-to-goal" id="timeToGoal">
+                At this rate, it will take you 3 months to reach your goal
+              </div>
+            </div>
+            <!--end::Progress Display-->
+
+            <!--begin::Impact Stats-->
+            <div class="impact-stats">
+              <div class="stat-item">
+                <span class="stat-label">Trees Saved This Year</span>
+                <span class="stat-value" id="treesSaved">32 trees</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">CO₂ Prevented</span>
+                <span class="stat-value" id="co2Prevented">0.7 tonnes</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Monthly Reduction</span>
+                <span class="stat-value" id="monthlyReduction">-12%</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Days Ahead of Schedule</span>
+                <span class="stat-value" id="daysAhead">45 days</span>
+              </div>
+            </div>
+            <!--end::Impact Stats-->
+
+            <div class="text-center mt-4">
+              <button class="btn change-goal-btn" onclick="changeGoal()">
+                <i class="bi bi-gear me-2"></i>Change goal
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--end::Main Impact Card-->
+
+    <!--begin::Share Section-->
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="share-section">
+          <i class="bi bi-cloud cloud-icon"></i>
+          <div class="share-title">Share Your Progress</div>
+          <div class="share-description" id="shareDescription">
+            In your time using EcoTrack, you've saved 32 trees and prevented 0.7 tons of 
+            carbon dioxide entering the atmosphere!
+          </div>
+          <button class="btn share-btn" onclick="shareProgress()">
+            <i class="bi bi-share"></i>
+            Share
+          </button>
+        </div>
+      </div>
+    </div>
+    <!--end::Share Section-->
+  </div>
+</div>
+<!--end::App Content-->
+{% endblock %}
+
+{% block extra_js %}
+<!-- EcoTrack Data Model -->
+<script src="{% static 'js/ecotrack-data.js' %}"></script>
+
+<script>
+  // Get data from shared model
+  const dataModel = window.EcoTrackData;
+
+  // Update impact display with dynamic data
+  function updateImpactDisplay() {
+    const goalData = dataModel.getAnnualGoal();
+    const progress = dataModel.getGoalProgress();
+    const monthlyChange = dataModel.calculateMonthlyChange();
+    const userData = dataModel.getUser();
+
+    // Calculate dynamic values
+    const progressPercent = progress.percentage;
+    const timeToGoal = calculateTimeToGoal(goalData.current, goalData.target, monthlyChange);
+    const treesSaved = Math.round(userData.totalCarbonSaved * 45.36); // 1 tonne CO2 ≈ 45.36 trees
+    const co2Prevented = userData.totalCarbonSaved;
+    const daysAhead = calculateDaysAhead(progressPercent, goalData);
+
+    // Update display elements
+    document.getElementById('progressPercentage').textContent = progressPercent + '%';
+    document.getElementById('progressBar').style.width = Math.min(progressPercent, 100) + '%';
+    document.getElementById('timeToGoal').textContent = timeToGoal;
+    document.getElementById('treesSaved').textContent = treesSaved + ' trees';
+    document.getElementById('co2Prevented').textContent = co2Prevented.toFixed(1) + ' tonnes';
+    document.getElementById('monthlyReduction').textContent = monthlyChange + '%';
+    document.getElementById('daysAhead').textContent = daysAhead + ' days';
+    
+    // Update share description
+    document.getElementById('shareDescription').textContent = 
+      `In your time using EcoTrack, you've saved ${treesSaved} trees and prevented ${co2Prevented.toFixed(1)} tons of carbon dioxide entering the atmosphere!`;
+  }
+
+  function calculateTimeToGoal(current, target, monthlyChangePercent) {
+    const remaining = target - current;
+    if (remaining <= 0) {
+      return "You've reached your goal!";
+    }
+
+    const currentMonthly = current / 11; // Assuming 11 months of data
+    const reductionRate = Math.abs(parseFloat(monthlyChangePercent)) / 100;
+    const monthlyReduction = currentMonthly * reductionRate;
+    
+    if (monthlyReduction <= 0) {
+      return "Increase your efforts to reach your goal";
+    }
+
+    const monthsToGoal = Math.ceil(remaining / monthlyReduction);
+    
+    if (monthsToGoal <= 3) {
+      return `At this rate, it will take you ${monthsToGoal} months to reach your goal`;
+    } else if (monthsToGoal <= 12) {
+      return `At this rate, it will take you ${monthsToGoal} months to reach your goal`;
+    } else {
+      const years = Math.ceil(monthsToGoal / 12);
+      return `At this rate, it will take you ${years} ${years === 1 ? 'year' : 'years'} to reach your goal`;
+    }
+  }
+
+  function calculateDaysAhead(progressPercent, goalData) {
+    const currentDate = new Date();
+    const startDate = new Date(goalData.startDate);
+    const endDate = new Date(goalData.endDate);
+    
+    const totalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+    const daysPassed = Math.ceil((currentDate - startDate) / (1000 * 60 * 60 * 24));
+    const expectedProgress = (daysPassed / totalDays) * 100;
+    
+    const daysAheadOrBehind = Math.round((progressPercent - expectedProgress) / 100 * totalDays);
+    
+    return Math.max(0, daysAheadOrBehind);
+  }
+
+  function changeGoal() {
+    const currentGoal = dataModel.getAnnualGoal().target;
+    const newGoal = prompt('Enter your new annual CO₂ goal (in tonnes):', currentGoal);
+    if (newGoal && !isNaN(newGoal) && newGoal > 0) {
+      dataModel.updateAnnualGoal(parseFloat(newGoal));
+      updateImpactDisplay();
+      alert('Goal updated successfully!');
+    }
+  }
+
+  function shareProgress() {
+    const progressPercent = dataModel.getGoalProgress().percentage;
+    const treesSaved = Math.round(dataModel.getUser().totalCarbonSaved * 45.36);
+    const co2Prevented = dataModel.getUser().totalCarbonSaved.toFixed(1);
+    
+    const shareText = `🌱 I'm ${progressPercent}% towards my carbon reduction goal with EcoTrack! I've saved ${treesSaved} trees and prevented ${co2Prevented} tonnes of CO₂ from entering the atmosphere. Join me in making a difference! #EcoTrack #CarbonReduction #SustainableLiving`;
+    
+    if (navigator.share) {
+      navigator.share({
+        title: 'My EcoTrack Progress',
+        text: shareText,
+        url: window.location.origin
+      }).catch(console.error);
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(shareText).then(() => {
+        alert('Progress copied to clipboard! Share it on your favorite platform.');
+      }).catch(() => {
+        fallbackShare(shareText);
+      });
+    } else {
+      fallbackShare(shareText);
+    }
+  }
+
+  function fallbackShare(text) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
+      document.execCommand('copy');
+      alert('Progress copied to clipboard! Share it on your favorite platform.');
+    } catch (err) {
+      prompt('Copy this text to share your progress:', text);
+    }
+    document.body.removeChild(textArea);
+  }
+
+  function logout() {
+    sessionStorage.removeItem('ecotrack_user');
+    window.location.href = "{% url 'dashboard:index' %}";
+  }
+
+  // Initialize on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    updateImpactDisplay();
+  });
+</script>
+{% endblock %}
