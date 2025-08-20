@@ -371,24 +371,65 @@
         }
       };
 
-      // Area Chart - Carbon Emissions Over Time
+      // Area Chart
       const areaChart = new Chart(document.getElementById('area-chart'), {
         type: 'line',
-        data: dataModel.getAreaChartData(),
+        data: {
+          labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+          datasets: [{
+            label: 'Carbon Emissions',
+            data: [30, 45, 35, 50, 49, 60, 70],
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4
+          }, {
+            label: 'Reduction Target',
+            data: [25, 35, 30, 45, 44, 55, 65],
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4
+          }]
+        },
         options: chartOptions
       });
 
-      // Line Chart - Energy Consumption Trends
+      // Line Chart
       const lineChart = new Chart(document.getElementById('line-chart'), {
         type: 'line',
-        data: dataModel.getLineChartData(),
+        data: {
+          labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+          datasets: [{
+            label: 'Energy Usage',
+            data: [65, 59, 80, 81, 56, 55, 40],
+            borderColor: 'rgba(23, 162, 184, 1)',
+            backgroundColor: 'rgba(23, 162, 184, 0.1)',
+            borderWidth: 2,
+            tension: 0.4
+          }]
+        },
         options: chartOptions
       });
 
-      // Donut Chart - Carbon Sources Breakdown
+      // Donut Chart
       const donutChart = new Chart(document.getElementById('donut-chart'), {
         type: 'doughnut',
-        data: dataModel.getDonutChartData(),
+        data: {
+          labels: ['Transportation', 'Energy', 'Food', 'Waste', 'Other'],
+          datasets: [{
+            data: [300, 150, 100, 80, 50],
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.8)',
+              'rgba(54, 162, 235, 0.8)',
+              'rgba(255, 205, 86, 0.8)',
+              'rgba(75, 192, 192, 0.8)',
+              'rgba(153, 102, 255, 0.8)'
+            ]
+          }]
+        },
         options: {
           responsive: true,
           maintainAspectRatio: false,
@@ -400,17 +441,44 @@
         }
       });
 
-      // Bar Chart - Monthly Emissions vs Target
+      // Bar Chart
       const barChart = new Chart(document.getElementById('bar-chart'), {
         type: 'bar',
-        data: dataModel.getBarChartData(),
+        data: {
+          labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+          datasets: [{
+            label: 'Emissions',
+            data: [12, 19, 15, 17, 20, 18, 22],
+            backgroundColor: 'rgba(40, 167, 69, 0.8)',
+            borderColor: 'rgba(40, 167, 69, 1)',
+            borderWidth: 1
+          }, {
+            label: 'Target',
+            data: [10, 15, 12, 14, 16, 14, 18],
+            backgroundColor: 'rgba(201, 203, 207, 0.8)',
+            borderColor: 'rgba(201, 203, 207, 1)',
+            borderWidth: 1
+          }]
+        },
         options: chartOptions
       });
 
-      // Pie Chart - Carbon Impact by Activity
+      // Pie Chart
       const pieChart = new Chart(document.getElementById('pie-chart'), {
         type: 'pie',
-        data: dataModel.getPieChartData(),
+        data: {
+          labels: ['Home', 'Transport', 'Work', 'Travel', 'Other'],
+          datasets: [{
+            data: [250, 200, 150, 100, 75],
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.8)',
+              'rgba(54, 162, 235, 0.8)',
+              'rgba(255, 205, 86, 0.8)',
+              'rgba(75, 192, 192, 0.8)',
+              'rgba(153, 102, 255, 0.8)'
+            ]
+          }]
+        },
         options: {
           responsive: true,
           maintainAspectRatio: false,
@@ -422,10 +490,28 @@
         }
       });
 
-      // Stacked Bar Chart - Energy Sources Breakdown
+      // Stacked Bar Chart
       const stackedBarChart = new Chart(document.getElementById('stacked-bar-chart'), {
         type: 'bar',
-        data: dataModel.getStackedBarChartData(),
+        data: {
+          labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+          datasets: [{
+            label: 'Electricity',
+            data: [5, 8, 6, 7, 9, 8, 10],
+            backgroundColor: 'rgba(40, 167, 69, 0.8)',
+            stack: 'Stack 0'
+          }, {
+            label: 'Gas',
+            data: [3, 5, 4, 5, 6, 5, 7],
+            backgroundColor: 'rgba(54, 162, 235, 0.8)',
+            stack: 'Stack 0'
+          }, {
+            label: 'Transport',
+            data: [4, 6, 5, 5, 5, 5, 5],
+            backgroundColor: 'rgba(255, 205, 86, 0.8)',
+            stack: 'Stack 0'
+          }]
+        },
         options: {
           responsive: true,
           maintainAspectRatio: false,
