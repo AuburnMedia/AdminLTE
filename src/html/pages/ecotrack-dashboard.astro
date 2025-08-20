@@ -1,0 +1,317 @@
+---
+import Head from "@components/_head.astro"
+import Footer from "@components/dashboard/_footer.astro"
+import Topbar from "@components/dashboard/_topbar.astro"
+import EcoTrackSidenav from "@components/dashboard/_ecotrack-sidenav.astro"
+import Scripts from "@components/_scripts.astro"
+
+const title = "EcoTrack | Carbon Dashboard"
+const path = "../../dist"
+const mainPage = "dashboard"
+const page = "ecotrack";
+
+// Smart path resolution: calculate relative path based on directory depth
+const pathname = Astro.url.pathname;
+const pathSegments = pathname.split('/').filter(segment => segment !== '');
+const depth = pathSegments.length > 0 ? pathSegments.length - 1 : 0;
+const deploymentPath = depth === 0 ? './' : '../'.repeat(depth);
+---
+
+<!doctype html>
+<html lang="en">
+  <!--begin::Head-->
+  <head>
+    <Head title={title} path={path} />
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
+  </head>
+  <!--end::Head-->
+  <!--begin::Body-->
+  <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+    <!--begin::App Wrapper-->
+    <div class="app-wrapper">
+      <Topbar path={path} />
+      <EcoTrackSidenav path={path} mainPage={mainPage} page={page} />
+      <!--begin::App Main-->
+      <main class="app-main">
+        <!--begin::App Content Header-->
+        <div class="app-content-header">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-sm-6">
+                <h3 class="mb-0">Dashboard</h3>
+              </div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                  <li class="breadcrumb-item"><a href="#">Home</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">
+                    Dashboard
+                  </li>
+                </ol>
+              </div>
+            </div>
+            <!--end::Row-->
+          </div>
+          <!--end::Container-->
+        </div>
+        <!--end::App Content Header-->
+        <!--begin::App Content-->
+        <div class="app-content">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Top Row with Charts-->
+            <div class="row mb-4">
+              <!--begin::Area Chart Card-->
+              <div class="col-lg-8">
+                <div class="card">
+                  <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="card-title mb-0">Area Chart</h3>
+                    <button class="btn btn-primary btn-sm">View Report</button>
+                  </div>
+                  <div class="card-body">
+                    <canvas id="carbon-usage-chart" height="120"></canvas>
+                  </div>
+                </div>
+              </div>
+              <!--end::Area Chart Card-->
+
+              <!--begin::Your Carbon Usage Card-->
+              <div class="col-lg-4">
+                <div class="card h-100">
+                  <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Your Carbon Usage</h5>
+                    <button class="btn btn-primary btn-sm">View Report</button>
+                  </div>
+                  <div class="card-body">
+                    <div class="carbon-usage-stats">
+                      <div class="usage-amount mb-3">
+                        <h2 class="text-primary mb-0">$18,230.00</h2>
+                        <small class="text-muted">Carbon Usage Over Time</small>
+                      </div>
+                      <div class="usage-details">
+                        <div class="row text-center">
+                          <div class="col-6">
+                            <div class="usage-metric">
+                              <small class="text-muted d-block">16%</small>
+                              <small class="text-muted">Usage last month</small>
+                            </div>
+                          </div>
+                          <div class="col-6">
+                            <div class="usage-metric">
+                              <span class="text-success">+ $1.99</span>
+                              <small class="text-muted d-block">Compared to</small>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="usage-chart mt-3">
+                        <canvas id="monthly-usage-chart" height="150"></canvas>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!--end::Your Carbon Usage Card-->
+            </div>
+            <!--end::Top Row with Charts-->
+
+            <!--begin::Bottom Row-->
+            <div class="row">
+              <!--begin::Previous Results Table-->
+              <div class="col-lg-8">
+                <div class="card">
+                  <div class="card-header">
+                    <h3 class="card-title">Previous Results</h3>
+                  </div>
+                  <div class="card-body p-0">
+                    <div class="table-responsive">
+                      <table class="table table-striped mb-0">
+                        <thead>
+                          <tr>
+                            <th>Date</th>
+                            <th>Carbon est.</th>
+                            <th>%</th>
+                            <th>Move</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>Some Product</td>
+                            <td>$13 USD</td>
+                            <td><span class="text-success">▲ $2.00</span></td>
+                            <td><button class="btn btn-sm btn-outline-secondary"><i class="bi bi-search"></i></button></td>
+                          </tr>
+                          <tr>
+                            <td>Another Product</td>
+                            <td>$29 USD</td>
+                            <td><span class="text-success">▲ $21.37</span></td>
+                            <td><button class="btn btn-sm btn-outline-secondary"><i class="bi bi-search"></i></button></td>
+                          </tr>
+                          <tr>
+                            <td>Amazing Product</td>
+                            <td>$1,230 USD</td>
+                            <td><span class="text-danger">▼ $18</span></td>
+                            <td><button class="btn btn-sm btn-outline-secondary"><i class="bi bi-search"></i></button></td>
+                          </tr>
+                          <tr class="table-danger">
+                            <td>Perfect Item <span class="badge bg-danger">Hot</span></td>
+                            <td>$199 USD</td>
+                            <td><span class="text-success">▲ $7</span></td>
+                            <td><button class="btn btn-sm btn-outline-secondary"><i class="bi bi-search"></i></button></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!--end::Previous Results Table-->
+
+              <!--begin::Right Side Column-->
+              <div class="col-lg-4">
+                <!--begin::Footprint Estimator Card-->
+                <div class="card mb-4">
+                  <div class="card-body">
+                    <h5 class="card-title">Use our footprint estimator!</h5>
+                    <p class="card-text">You haven't taken the checkup! That's time_since_start time since_start days since_start.</p>
+                    <p class="text-muted small">Our footprint estimator can estimate your carbon usage in only a few questions!</p>
+                    <button class="btn btn-primary">Take Checkup</button>
+                  </div>
+                </div>
+                <!--end::Footprint Estimator Card-->
+
+                <!--begin::Goal Progress Card-->
+                <div class="card">
+                  <div class="card-body text-center">
+                    <h5 class="card-title">Goal Progress</h5>
+                    <div class="goal-progress-container my-4">
+                      <div class="goal-percentage">
+                        <span class="display-1 fw-bold">X%</span>
+                      </div>
+                      <p class="text-muted">At this current rate, it will take you 15 weeks to reach your current goal!</p>
+                      <button class="btn btn-primary">Go Somewhere</button>
+                    </div>
+                  </div>
+                </div>
+                <!--end::Goal Progress Card-->
+              </div>
+              <!--end::Right Side Column-->
+            </div>
+            <!--end::Bottom Row-->
+          </div>
+          <!--end::Container-->
+        </div>
+        <!--end::App Content-->
+      </main>
+      <!--end::App Main-->
+      <Footer />
+    </div>
+    <!--end::App Wrapper-->
+    <!--begin::Script-->
+    <Scripts path={path} />
+
+    <!-- Chart.js Implementation -->
+    <script is:inline>
+      // Carbon Usage Area Chart
+      const carbonUsageCtx = document.getElementById('carbon-usage-chart').getContext('2d');
+      const carbonUsageChart = new Chart(carbonUsageCtx, {
+        type: 'line',
+        data: {
+          labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+          datasets: [{
+            label: 'Carbon Usage',
+            data: [30, 45, 35, 50, 49, 60, 70],
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4
+          }, {
+            label: 'Target Usage',
+            data: [20, 35, 25, 40, 39, 50, 55],
+            backgroundColor: 'rgba(153, 102, 255, 0.2)',
+            borderColor: 'rgba(153, 102, 255, 1)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: {
+                display: true
+              }
+            },
+            x: {
+              grid: {
+                display: false
+              }
+            }
+          }
+        }
+      });
+
+      // Monthly Usage Bar Chart
+      const monthlyUsageCtx = document.getElementById('monthly-usage-chart').getContext('2d');
+      const monthlyUsageChart = new Chart(monthlyUsageCtx, {
+        type: 'bar',
+        data: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+          datasets: [{
+            label: 'Usage',
+            data: [12, 19, 15, 17, 20, 18, 22],
+            backgroundColor: 'rgba(54, 162, 235, 0.8)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+          }, {
+            label: 'Average Usage',
+            data: [10, 15, 12, 14, 16, 14, 18],
+            backgroundColor: 'rgba(201, 203, 207, 0.8)',
+            borderColor: 'rgba(201, 203, 207, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: true,
+              position: 'bottom',
+              labels: {
+                usePointStyle: true,
+                boxWidth: 6
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: {
+                display: false
+              }
+            },
+            x: {
+              grid: {
+                display: false
+              }
+            }
+          }
+        }
+      });
+    </script>
+    <!--end::Script-->
+  </body><!--end::Body-->
+</html>
