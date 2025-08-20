@@ -309,7 +309,7 @@
                       </div>
                       <div class="mb-3">
                         <strong id="currentProgress">2.3 / 3.0 tonnes</strong>
-                        <small class="d-block text-muted">Current / Target CO��</small>
+                        <small class="d-block text-muted">Current / Target CO₂</small>
                       </div>
                       <p class="text-muted" id="goalMessage">You're 0.7 tonnes away from your annual goal!</p>
                       <button class="btn btn-success" onclick="updateGoal()">Update Goal</button>
@@ -361,8 +361,7 @@
         }
 
         const userObj = JSON.parse(user);
-        const userData = dataModel.getUser();
-        document.getElementById('userName').textContent = userData.name;
+        document.getElementById('userName').textContent = userObj.name;
 
         // Update dashboard with user data
         updateDashboard();
@@ -374,51 +373,27 @@
       }
 
       function updateDashboard() {
-        const goalData = dataModel.getAnnualGoal();
-        const progress = dataModel.getGoalProgress();
-        const monthlyChange = dataModel.calculateMonthlyChange();
-
-        // Update total carbon display
-        document.getElementById('totalCarbon').textContent = `${goalData.current} tonnes`;
-        document.getElementById('monthlyChange').textContent = `${monthlyChange >= 0 ? '+' : ''}${monthlyChange}%`;
-        document.getElementById('monthlyReduction').textContent = `${monthlyChange >= 0 ? '+' : ''}${(goalData.current - goalData.target).toFixed(2)} tonnes`;
+        // Update progress calculation
+        const progress = Math.round((userData.currentCarbon / userData.targetCarbon) * 100);
+        const remaining = (userData.targetCarbon - userData.currentCarbon).toFixed(1);
 
         // Update progress circle
-        document.getElementById('progressCircle').style.setProperty('--progress', progress.percentage + '%');
-        document.getElementById('progressText').textContent = progress.percentage + '%';
-        document.getElementById('currentProgress').textContent = `${goalData.current} / ${goalData.target} tonnes`;
+        document.getElementById('progressCircle').style.setProperty('--progress', progress + '%');
+        document.getElementById('progressText').textContent = progress + '%';
+        document.getElementById('currentProgress').textContent = `${userData.currentCarbon} / ${userData.targetCarbon} tonnes`;
 
         // Update goal message
-        if (progress.percentage < 100) {
-          document.getElementById('goalMessage').textContent = `You're ${progress.remaining} tonnes away from your annual goal!`;
+        if (progress < 100) {
+          document.getElementById('goalMessage').textContent = `You're ${remaining} tonnes away from your annual goal!`;
         } else {
-          document.getElementById('goalMessage').textContent = `You've exceeded your goal by ${Math.abs(progress.remaining)} tonnes!`;
-        }
-
-        // Update history table
-        updateHistoryTable();
-      }
-
-      function updateHistoryTable() {
-        const history = dataModel.getRecentHistory();
-        const tableBody = document.getElementById('carbonHistoryTable');
-        if (tableBody) {
-          tableBody.innerHTML = history.slice(0, 5).map(entry => `
-            <tr${entry.change > 10 ? ' class="table-warning"' : ''}>
-              <td>${new Date(entry.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</td>
-              <td>${entry.carbon} tonnes</td>
-              <td><span class="text-${entry.change >= 0 ? 'danger' : 'success'}">${entry.change >= 0 ? '▲' : '▼'} ${Math.abs(entry.change)}%</span></td>
-              <td><button class="btn btn-sm btn-outline-secondary"><i class="bi bi-eye"></i></button></td>
-            </tr>
-          `).join('');
+          document.getElementById('goalMessage').textContent = `You've exceeded your goal by ${(userData.currentCarbon - userData.targetCarbon).toFixed(1)} tonnes!`;
         }
       }
 
       function updateGoal() {
-        const currentGoal = dataModel.getAnnualGoal().target;
-        const newGoal = prompt('Enter your new annual CO₂ goal (in tonnes):', currentGoal);
+        const newGoal = prompt('Enter your new annual CO₂ goal (in tonnes):', userData.targetCarbon);
         if (newGoal && !isNaN(newGoal) && newGoal > 0) {
-          dataModel.updateAnnualGoal(parseFloat(newGoal));
+          userData.targetCarbon = parseFloat(newGoal);
           updateDashboard();
           alert('Goal updated successfully!');
         }
